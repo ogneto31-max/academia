@@ -1,5 +1,10 @@
 // script.js
 
+// Importações Firebase (SDK modular)
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // Opcional, se quiser usar o Firestore no futuro
+
 // Configuração Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDqzHdq1fpfcwKRw8ryIprFnWTbtIEGWYs",
@@ -10,11 +15,12 @@ const firebaseConfig = {
   appId: "1:833537870276:web:8383ea0f739d42b21ebc91"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+// Inicialização Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app); // ← Correto agora!
+const db = getFirestore(app); // ← Opcional (caso queira usar o Firestore futuramente)
 
-// Elementos
+// Elementos da interface
 const loginContainer = document.getElementById('login-container');
 const appContainer = document.getElementById('app');
 const btnLogin = document.getElementById('btn-login');
@@ -52,7 +58,8 @@ function mostrarPlanoTreino(){
 btnLogin.addEventListener('click', () => {
   const email = emailInput.value;
   const senha = senhaInput.value;
-  auth.signInWithEmailAndPassword(email, senha)
+
+  signInWithEmailAndPassword(auth, email, senha)
     .then(() => {
       loginContainer.style.display = 'none';
       appContainer.style.display = 'block';
@@ -65,13 +72,14 @@ btnLogin.addEventListener('click', () => {
 btnCriarConta.addEventListener('click', () => {
   const email = emailInput.value;
   const senha = senhaInput.value;
-  auth.createUserWithEmailAndPassword(email, senha)
+
+  createUserWithEmailAndPassword(auth, email, senha)
     .then(() => alert('Conta criada com sucesso!'))
     .catch(err => alert(err.message));
 });
 
 // Verificar login
-auth.onAuthStateChanged(user => {
+onAuthStateChanged(auth, (user) => {
   if(user){
     loginContainer.style.display = 'none';
     appContainer.style.display = 'block';
