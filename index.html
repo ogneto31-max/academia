@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ganho de Massa - Diário e Treino</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div id="login-container" class="login-box">
+    <h2>Bem-vindo!</h2>
+    <p>Faça login para acessar seu diário de treino e alimentação.</p>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="senha" placeholder="Senha">
+    <button id="btn-login">Login</button>
+    <button id="btn-criar-conta">Criar Conta</button>
+    <hr>
+    <button id="btn-login-google" class="google-btn">Login com Google</button>
+</div>
+
+<div id="app" style="display:none;">
+    <h1>Diário de Treino e Alimentação</h1>
+    <div id="plano-treino"></div>
+    <div id="plano-alimentacao"></div>
+    <canvas id="grafico-progresso"></canvas>
+</div>
+
+<script src="script.js"></script>
+<script>
+// Login com Google
+const btnGoogle = document.getElementById('btn-login-google');
+btnGoogle.addEventListener('click', () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+        .then(result => {
+            loginContainer.style.display = 'none';
+            appContainer.style.display = 'block';
+            mostrarPlanoTreino();
+        })
+        .catch(err => alert(err.message));
+});
+</script>
+</body>
+</html>
