@@ -2,12 +2,11 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ganho de Massa - Diário e Treino</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <div id="login-container" class="login-box">
     <h2>Bem-vindo!</h2>
     <p>Faça login para acessar seu diário de treino e alimentação.</p>
@@ -19,15 +18,14 @@
     <button id="btn-login-google" class="google-btn">Login com Google</button>
   </div>
 
-  <div id="app" style="display: none;">
+  <div id="app" style="display:none;">
     <h1>Diário de Treino e Alimentação</h1>
     <div id="plano-treino"></div>
     <div id="plano-alimentacao"></div>
     <canvas id="grafico-progresso"></canvas>
   </div>
 
-  <!-- Script ESModule (usa imports modernos) -->
-  <script type="module" src="script.js"></script>
+  <!-- Importa o script como módulo -->
   <script type="module" src="./script.js"></script>
 </body>
 </html>

@@ -1,28 +1,27 @@
-// script.js
+// Importa do Firebase via CDN com módulos ES
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import {
   getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signInWithPopup,
   GoogleAuthProvider,
-  onAuthStateChanged
+  signInWithPopup,
+  onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-// Firebase config
+// Config Firebase - use sua config aqui
 const firebaseConfig = {
   apiKey: "AIzaSyDqzHdq1fpfcwKRw8ryIprFnWTbtIEGWYs",
   authDomain: "academia-c79e3.firebaseapp.com",
   projectId: "academia-c79e3",
-  storageBucket: "academia-c79e3.firebasestorage.app",
+  storageBucket: "academia-c79e3.appspot.com",
   messagingSenderId: "833537870276",
-  appId: "1:833537870276:web:8383ea0f739d42b21ebc91"
+  appId: "1:833537870276:web:8383ea0f739d42b21ebc91",
 };
 
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 
 // Elementos DOM
 const loginContainer = document.getElementById("login-container");
@@ -34,31 +33,96 @@ const emailInput = document.getElementById("email");
 const senhaInput = document.getElementById("senha");
 const planoTreinoDiv = document.getElementById("plano-treino");
 
-// Função para gerar plano de treino
+// Função para gerar plano de treino (igual seu original)
 function gerarPlanoTreino() {
   return [
-    { dia: "Segunda", exercicios: ["Peito + Tríceps + Abdômen", "Supino reto 4x10", "Supino inclinado 3x10", "Crossover 3x12", "Tríceps pulley 3x12", "Tríceps testa 3x12", "Abdômen: prancha 3x1 min + crunch 3x20"] },
-    { dia: "Terça", exercicios: ["Costas + Bíceps", "Puxada frente 4x10", "Remada curvada 4x10", "Barra fixa 3x até falhar", "Rosca direta 3x12", "Rosca martelo 3x12"] },
-    { dia: "Quarta", exercicios: ["Pernas + Glúteos", "Agachamento 4x10", "Leg press 4x12", "Avanço 3x12 cada perna", "Stiff 3x12", "Panturrilha 3x20"] },
-    { dia: "Quinta", exercicios: ["Ombros + Abdômen", "Desenvolvimento militar 4x10", "Elevação lateral 3x12", "Elevação frontal 3x12", "Face pull 3x12", "Abdômen: prancha 3x1 min + crunch 3x20"] },
-    { dia: "Sexta", exercicios: ["Full Body leve / Cardio leve", "Supino 3x10", "Remada 3x10", "Agachamento 3x10", "Cardio leve 30 min"] },
-    { dia: "Sábado", exercicios: ["Treino extra / Músculos fracos", "Full body ou músculos mais fracos", "Exercícios de correção de pontos fracos"] },
-    { dia: "Domingo", exercicios: ["Descanso", "Atividade leve: caminhada ou alongamento", "Alongamento e mobilidade"] }
+    {
+      dia: "Segunda",
+      exercicios: [
+        "Peito + Tríceps + Abdômen",
+        "Supino reto 4x10",
+        "Supino inclinado 3x10",
+        "Crossover 3x12",
+        "Tríceps pulley 3x12",
+        "Tríceps testa 3x12",
+        "Abdômen: prancha 3x1 min + crunch 3x20",
+      ],
+    },
+    {
+      dia: "Terça",
+      exercicios: [
+        "Costas + Bíceps",
+        "Puxada frente 4x10",
+        "Remada curvada 4x10",
+        "Barra fixa 3x até falhar",
+        "Rosca direta 3x12",
+        "Rosca martelo 3x12",
+      ],
+    },
+    {
+      dia: "Quarta",
+      exercicios: [
+        "Pernas + Glúteos",
+        "Agachamento 4x10",
+        "Leg press 4x12",
+        "Avanço 3x12 cada perna",
+        "Stiff 3x12",
+        "Panturrilha 3x20",
+      ],
+    },
+    {
+      dia: "Quinta",
+      exercicios: [
+        "Ombros + Abdômen",
+        "Desenvolvimento militar 4x10",
+        "Elevação lateral 3x12",
+        "Elevação frontal 3x12",
+        "Face pull 3x12",
+        "Abdômen: prancha 3x1 min + crunch 3x20",
+      ],
+    },
+    {
+      dia: "Sexta",
+      exercicios: [
+        "Full Body leve / Cardio leve",
+        "Supino 3x10",
+        "Remada 3x10",
+        "Agachamento 3x10",
+        "Cardio leve 30 min",
+      ],
+    },
+    {
+      dia: "Sábado",
+      exercicios: [
+        "Treino extra / Músculos fracos",
+        "Full body ou músculos mais fracos",
+        "Exercícios de correção de pontos fracos",
+      ],
+    },
+    {
+      dia: "Domingo",
+      exercicios: [
+        "Descanso",
+        "Atividade leve: caminhada ou alongamento",
+        "Alongamento e mobilidade",
+      ],
+    },
   ];
 }
 
-// Mostrar plano de treino
 function mostrarPlanoTreino() {
   const plano = gerarPlanoTreino();
   planoTreinoDiv.innerHTML = "<h2>Plano de Treino</h2>";
   plano.forEach((dia) => {
     const diaDiv = document.createElement("div");
-    diaDiv.innerHTML = `<h3>${dia.dia}</h3><ul>${dia.exercicios.map((ex) => `<li>${ex}</li>`).join("")}</ul>`;
+    diaDiv.innerHTML = `<h3>${dia.dia}</h3><ul>${dia.exercicios
+      .map((ex) => `<li>${ex}</li>`)
+      .join("")}</ul>`;
     planoTreinoDiv.appendChild(diaDiv);
   });
 }
 
-// Login com email/senha
+// Login com email e senha
 btnLogin.addEventListener("click", () => {
   const email = emailInput.value;
   const senha = senhaInput.value;
@@ -72,7 +136,7 @@ btnLogin.addEventListener("click", () => {
     .catch((err) => alert(err.message));
 });
 
-// Criar conta com email/senha
+// Criar conta com email e senha
 btnCriarConta.addEventListener("click", () => {
   const email = emailInput.value;
   const senha = senhaInput.value;
@@ -84,6 +148,8 @@ btnCriarConta.addEventListener("click", () => {
 
 // Login com Google
 btnLoginGoogle.addEventListener("click", () => {
+  const provider = new GoogleAuthProvider();
+
   signInWithPopup(auth, provider)
     .then(() => {
       loginContainer.style.display = "none";
@@ -93,7 +159,7 @@ btnLoginGoogle.addEventListener("click", () => {
     .catch((err) => alert(err.message));
 });
 
-// Verifica autenticação ao carregar
+// Verifica estado de login
 onAuthStateChanged(auth, (user) => {
   if (user) {
     loginContainer.style.display = "none";
@@ -104,3 +170,6 @@ onAuthStateChanged(auth, (user) => {
     appContainer.style.display = "none";
   }
 });
+
+// Debug para garantir script carregado
+console.log("Script carregado e módulo funcionando.");
