@@ -1,11 +1,15 @@
 // script.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-// Importações Firebase (SDK modular)
-import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"; // Opcional, se quiser usar o Firestore no futuro
-
-// Configuração Firebase
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDqzHdq1fpfcwKRw8ryIprFnWTbtIEGWYs",
   authDomain: "academia-c79e3.firebaseapp.com",
@@ -15,77 +19,88 @@ const firebaseConfig = {
   appId: "1:833537870276:web:8383ea0f739d42b21ebc91"
 };
 
-// Inicialização Firebase
+// Inicializa Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app); // ← Correto agora!
-const db = getFirestore(app); // ← Opcional (caso queira usar o Firestore futuramente)
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-// Elementos da interface
-const loginContainer = document.getElementById('login-container');
-const appContainer = document.getElementById('app');
-const btnLogin = document.getElementById('btn-login');
-const btnCriarConta = document.getElementById('btn-criar-conta');
-const emailInput = document.getElementById('email');
-const senhaInput = document.getElementById('senha');
-const planoTreinoDiv = document.getElementById('plano-treino');
-const planoAlimentacaoDiv = document.getElementById('plano-alimentacao');
+// Elementos DOM
+const loginContainer = document.getElementById("login-container");
+const appContainer = document.getElementById("app");
+const btnLogin = document.getElementById("btn-login");
+const btnCriarConta = document.getElementById("btn-criar-conta");
+const btnLoginGoogle = document.getElementById("btn-login-google");
+const emailInput = document.getElementById("email");
+const senhaInput = document.getElementById("senha");
+const planoTreinoDiv = document.getElementById("plano-treino");
 
 // Função para gerar plano de treino
-function gerarPlanoTreino(){
+function gerarPlanoTreino() {
   return [
-    {dia:'Segunda', exercicios:['Peito + Tríceps + Abdômen','Supino reto 4x10','Supino inclinado 3x10','Crossover 3x12','Tríceps pulley 3x12','Tríceps testa 3x12','Abdômen: prancha 3x1 min + crunch 3x20']},
-    {dia:'Terça', exercicios:['Costas + Bíceps','Puxada frente 4x10','Remada curvada 4x10','Barra fixa 3x até falhar','Rosca direta 3x12','Rosca martelo 3x12']},
-    {dia:'Quarta', exercicios:['Pernas + Glúteos','Agachamento 4x10','Leg press 4x12','Avanço 3x12 cada perna','Stiff 3x12','Panturrilha 3x20']},
-    {dia:'Quinta', exercicios:['Ombros + Abdômen','Desenvolvimento militar 4x10','Elevação lateral 3x12','Elevação frontal 3x12','Face pull 3x12','Abdômen: prancha 3x1 min + crunch 3x20']},
-    {dia:'Sexta', exercicios:['Full Body leve / Cardio leve','Supino 3x10','Remada 3x10','Agachamento 3x10','Cardio leve 30 min']},
-    {dia:'Sábado', exercicios:['Treino extra / Músculos fracos','Full body ou músculos mais fracos','Exercícios de correção de pontos fracos']},
-    {dia:'Domingo', exercicios:['Descanso','Atividade leve: caminhada ou alongamento','Alongamento e mobilidade']}
+    { dia: "Segunda", exercicios: ["Peito + Tríceps + Abdômen", "Supino reto 4x10", "Supino inclinado 3x10", "Crossover 3x12", "Tríceps pulley 3x12", "Tríceps testa 3x12", "Abdômen: prancha 3x1 min + crunch 3x20"] },
+    { dia: "Terça", exercicios: ["Costas + Bíceps", "Puxada frente 4x10", "Remada curvada 4x10", "Barra fixa 3x até falhar", "Rosca direta 3x12", "Rosca martelo 3x12"] },
+    { dia: "Quarta", exercicios: ["Pernas + Glúteos", "Agachamento 4x10", "Leg press 4x12", "Avanço 3x12 cada perna", "Stiff 3x12", "Panturrilha 3x20"] },
+    { dia: "Quinta", exercicios: ["Ombros + Abdômen", "Desenvolvimento militar 4x10", "Elevação lateral 3x12", "Elevação frontal 3x12", "Face pull 3x12", "Abdômen: prancha 3x1 min + crunch 3x20"] },
+    { dia: "Sexta", exercicios: ["Full Body leve / Cardio leve", "Supino 3x10", "Remada 3x10", "Agachamento 3x10", "Cardio leve 30 min"] },
+    { dia: "Sábado", exercicios: ["Treino extra / Músculos fracos", "Full body ou músculos mais fracos", "Exercícios de correção de pontos fracos"] },
+    { dia: "Domingo", exercicios: ["Descanso", "Atividade leve: caminhada ou alongamento", "Alongamento e mobilidade"] }
   ];
 }
 
-// Função para mostrar plano de treino
-function mostrarPlanoTreino(){
+// Mostrar plano de treino
+function mostrarPlanoTreino() {
   const plano = gerarPlanoTreino();
-  planoTreinoDiv.innerHTML = '<h2>Plano de Treino</h2>';
-  plano.forEach(dia => {
-    const diaDiv = document.createElement('div');
-    diaDiv.innerHTML = `<h3>${dia.dia}</h3><ul>${dia.exercicios.map(ex => `<li>${ex}</li>`).join('')}</ul>`;
+  planoTreinoDiv.innerHTML = "<h2>Plano de Treino</h2>";
+  plano.forEach((dia) => {
+    const diaDiv = document.createElement("div");
+    diaDiv.innerHTML = `<h3>${dia.dia}</h3><ul>${dia.exercicios.map((ex) => `<li>${ex}</li>`).join("")}</ul>`;
     planoTreinoDiv.appendChild(diaDiv);
   });
 }
 
-// Login
-btnLogin.addEventListener('click', () => {
+// Login com email/senha
+btnLogin.addEventListener("click", () => {
   const email = emailInput.value;
   const senha = senhaInput.value;
 
   signInWithEmailAndPassword(auth, email, senha)
     .then(() => {
-      loginContainer.style.display = 'none';
-      appContainer.style.display = 'block';
+      loginContainer.style.display = "none";
+      appContainer.style.display = "block";
       mostrarPlanoTreino();
     })
-    .catch(err => alert(err.message));
+    .catch((err) => alert(err.message));
 });
 
-// Criar conta
-btnCriarConta.addEventListener('click', () => {
+// Criar conta com email/senha
+btnCriarConta.addEventListener("click", () => {
   const email = emailInput.value;
   const senha = senhaInput.value;
 
   createUserWithEmailAndPassword(auth, email, senha)
-    .then(() => alert('Conta criada com sucesso!'))
-    .catch(err => alert(err.message));
+    .then(() => alert("Conta criada com sucesso!"))
+    .catch((err) => alert(err.message));
 });
 
-// Verificar login
+// Login com Google
+btnLoginGoogle.addEventListener("click", () => {
+  signInWithPopup(auth, provider)
+    .then(() => {
+      loginContainer.style.display = "none";
+      appContainer.style.display = "block";
+      mostrarPlanoTreino();
+    })
+    .catch((err) => alert(err.message));
+});
+
+// Verifica autenticação ao carregar
 onAuthStateChanged(auth, (user) => {
-  if(user){
-    loginContainer.style.display = 'none';
-    appContainer.style.display = 'block';
+  if (user) {
+    loginContainer.style.display = "none";
+    appContainer.style.display = "block";
     mostrarPlanoTreino();
   } else {
-    loginContainer.style.display = 'block';
-    appContainer.style.display = 'none';
+    loginContainer.style.display = "block";
+    appContainer.style.display = "none";
   }
 });
