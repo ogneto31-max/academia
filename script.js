@@ -2,12 +2,12 @@
 
 // Configuração Firebase
 const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "SEU_PROJETO.firebaseapp.com",
-    projectId: "SEU_PROJETO",
-    storageBucket: "SEU_PROJETO.appspot.com",
-    messagingSenderId: "SEU_ID",
-    appId: "SEU_APP_ID"
+  apiKey: "AIzaSyDqzHdq1fpfcwKRw8ryIprFnWTbtIEGWYs",
+  authDomain: "academia-c79e3.firebaseapp.com",
+  projectId: "academia-c79e3",
+  storageBucket: "academia-c79e3.firebasestorage.app",
+  messagingSenderId: "833537870276",
+  appId: "1:833537870276:web:8383ea0f739d42b21ebc91"
 };
 
 firebase.initializeApp(firebaseConfig);
